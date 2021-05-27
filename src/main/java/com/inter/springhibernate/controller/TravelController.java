@@ -18,23 +18,26 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.inter.springhibernate.controller.dto.AddTravelDTO;
 import com.inter.springhibernate.model.Travel;
+import com.inter.springhibernate.repositories.TravelRepository;
 import com.inter.springhibernate.service.TravelService;
 
 @RestController
 @RequestMapping("/api-travels/travels")
 public class TravelController {
 
+	private TravelRepository travelRepository;
+	
+	public TravelController(TravelRepository travelRepository) {
+		this.travelRepository = travelRepository;
+	}
+	
 	@Autowired
 	private TravelService travelService;
 	
 	@GetMapping
 	public ResponseEntity<List<Travel>> find() {
 		
-		if (travelService.find().isEmpty()) {
-			return ResponseEntity.notFound().build();
-		}
-		
-		return ResponseEntity.ok(travelService.find());
+		return ResponseEntity.ok(travelRepository.findAll());
 		
 	}
 	
@@ -56,7 +59,7 @@ public class TravelController {
 		
 		try {
 							
-			Travel createdTravel  = travelService.createTravel(travel);
+			Travel createdTravel  = travelService.createTravel(travel, travelRepository);
 		
 			var uri = ServletUriComponentsBuilder.fromCurrentRequest().path(createdTravel.getOrderNumber()).build().toUri();
 			

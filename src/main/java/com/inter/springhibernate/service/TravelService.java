@@ -14,6 +14,7 @@ import com.inter.springhibernate.enums.TravelTypeEnum;
 import com.inter.springhibernate.factory.TravelFactory;
 import com.inter.springhibernate.factory.impl.TravelFactoryImpl;
 import com.inter.springhibernate.model.Travel;
+import com.inter.springhibernate.repositories.TravelRepository;
 
 @Service
 public class TravelService {
@@ -62,13 +63,15 @@ public class TravelService {
 		
 	}
 	
-	public Travel createTravel(AddTravelDTO aTravel) {
+	public Travel createTravel(AddTravelDTO aTravel, TravelRepository travelRepository) {
 		
 		createFactory();
 		
 		Travel travel = factory.createTravel((String) aTravel.getType());
 		travel.setId(aTravel.getId());
 		setTravelValues(aTravel, travel);
+		
+		travelRepository.save(travel);
 		
 		return travel;
 		
